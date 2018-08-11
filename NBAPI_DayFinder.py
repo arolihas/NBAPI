@@ -6,9 +6,9 @@ loopcondition = True
 while loopcondition:
 	try:
 		#Selects day to find games
-		day = input("Enter day: ")
-		month = input("Enter month: ")
-		year = input("Enter year: ")
+		month = int(input("Enter month: "))
+		day = int(input("Enter day: "))
+		year = int(input("Enter year: "))
 		loopcondition = False
 	except:
 		print("Pick a calendar day in DD/MM/YYYY format please")
@@ -29,7 +29,7 @@ while loopcondition:
 #Enter desired stat
 loopconditionStat = True
 while loopconditionStat:
-	value = raw_input("Select a stat (MIN,REB,AST,OREB,DREB,PTS,PLUS_MINUS,STL,BLK,FG3M,FGM): ")
+	value = input("Select a stat (MIN,REB,AST,OREB,DREB,PTS,PLUS_MINUS,STL,BLK,FG3M,FGM): ")
 	if (value not in ["MIN","REB","AST","OREB","DREB","PTS","PLUS_MINUS","STL","BLK","FG3M","FGM"]):
 		print("Pick a real stat")
 		loopconditionStat = True
@@ -39,20 +39,18 @@ while loopconditionStat:
 print("Searching...")
 #Retrieves boxscores for each game
 boxScores = []
-for games in gamelist:
-	boxScores.append(game.Boxscore(games['GAME_ID']).player_stats())
+for i in range(len(gamelist['GAME_ID'])):
+    boxScores.append(game.Boxscore(gamelist['GAME_ID'][i]).player_stats())
 
 
-values = []
-players = []
-for gameNumber in range(len(boxScores)):
-	for player in range(len(boxScores[gameNumber])):
-		#places each player's stats in entry of list
-		players.append(boxScores[gameNumber][player]['PLAYER_NAME'])
-		#places each player's specific stat desired in same index of a different list
-		values.append(boxScores[gameNumber][player][value])
+maxVal = 0 
+player = '' 
+for bx in range(len(boxScores)): 
+    for vals in range(len(boxScores[bx])): 
+        if boxScores[bx][value][vals] > maxVal: 
+            maxVal = boxScores[bx][value][vals] 
+            player = boxScores[bx]['PLAYER_NAME'][vals] 
 #index of stat leader shared by values and player
-index = (values.index(max(values)))
 
 #naming convention
 if value == 'MIN': valuelabel = "most minutes"
@@ -66,4 +64,4 @@ elif value == 'STL': valuelabel = "most steals"
 elif value == 'BLK': valuelabel = "most blocks"
 elif value == 'FG3M': valuelabel = "most 3 pointers made"
 elif value == 'FGM': valuelabel = "most field goals"
-print "On {}/{}/{}, {} had the {} with {} {}".format(month,day,year,players[index],valuelabel,max(values),value)
+print "On {}/{}/{}, {} had the {} with {} {}".format(month,day,year,player,valuelabel,max,value)
